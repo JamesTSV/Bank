@@ -1,0 +1,87 @@
+use master
+go
+Create database First_Bank
+go
+Use First_Bank
+go
+
+create table Accounts(
+						Acc_ID int not null,
+						[Type_ID] int not null,
+						Opendate datetime not null,
+						PersonID int not null,
+						Class_ID int not null ,
+						Balance int not null,
+				CONSTRAINT AccountID_PK primary key (Acc_ID),
+)
+go
+create table Acc_types(
+						[Type_ID] int not null,
+						Acc_type nvarchar(10) not null,
+				CONSTRAINT Account_type_ID_PK primary key ([Type_ID])
+)
+go
+create table Person(
+						PersonID int not null,
+						Person_IDcard int not null,
+						FirstName nvarchar(15) not null,
+						LastName nvarchar(25) not null,
+						Email nvarchar(25) not null,
+						Phone nvarchar(15) not null,
+						Birthdate datetime not null,
+						AddressLine1 nvarchar(60) not null,
+						AddressLine2 nvarchar(60),
+						City nvarchar(30) not null,
+						Gender nvarchar(10) not null,
+						Photo binary not null,
+						ModifiedDate datetime not null,
+				CONSTRAINT Person_ID_PK primary key (PersonID)
+)
+go
+create table Transactions(
+						TransactionID int identity(1000,1) not null,
+						Trans_typeID int not null,
+						Acc_ID int not null,
+						Amount float not null,
+						TransactionDate datetime not null,
+				CONSTRAINT TransactionID_PK primary key (TransactionID)
+)
+go
+create table Transaction_type(
+						Trans_typeID int not null,
+						Transaction_type nvarchar(10) not null,
+				CONSTRAINT Trans_typeID_PK primary key (Trans_typeID)
+)
+go
+create table UserName(
+						PersonID int not null,
+						UserName nvarchar(20) not null,
+						[Password] nvarchar(20) not null,
+						ModifiedDate datetime not null,
+				CONSTRAINT UserName_PersonID_PK primary key (PersonID),
+)
+go
+create table Acc_class(
+						Class_ID int not null,
+						Class_type nvarchar(10) not null,
+						Commision float not null,
+				CONSTRAINT Class_ID_PK primary key (Class_ID)
+)
+go
+alter table Accounts add 
+		CONSTRAINT Acc_types_TypeID_FK foreign key ([Type_ID]) references Acc_Types([Type_ID])
+go
+alter table Accounts add 
+		CONSTRAINT Person_PersonID_FK foreign key (PersonID) references Person(PersonID)
+go
+alter table Accounts add 
+		CONSTRAINT Acc_class_Class_ID_FK foreign key (Class_ID) references Acc_class(Class_ID)
+go
+alter table Transactions add 
+		CONSTRAINT Transaction_type_Trans_typeID_FK foreign key (Trans_typeID) references Transaction_type(Trans_typeID)
+go
+alter table Transactions add 
+		CONSTRAINT Accounts_Acc_ID_FK foreign key (Acc_ID) references Accounts(Acc_ID)
+go
+alter table Person add 
+		CONSTRAINT UserName_Person_ID_FK foreign key (PersonID) references UserName(PersonID)
